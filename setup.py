@@ -62,6 +62,12 @@ long_description = "\n".join([
     read('CHANGES.rst'),
 ])
 
+install_requires = []
+if sys.version_info[0] == 2 and sys.version_info[1] < 7:
+    install_requires += [
+        'argparse',
+    ]
+
 setup(
     name='TuxyWORDS',
     version=version,
@@ -87,6 +93,7 @@ setup(
             'twcleanup = tuxywords.cleanup:main',
         ],
     },
+    install_requires=install_requires,
     test_suite='nose.collector',
     tests_require=[
         'nose',

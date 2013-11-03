@@ -23,6 +23,13 @@
 #
 """Clean the content of a file consisting of a list of words."""
 
+from __future__ import print_function
+import codecs
+import sys
+if sys.version_info[0] == 2:
+    # Use the generator version of filter in Python 2
+    from itertools import ifilter as filter
+
 
 def is_valid(word):
     """Returns whether a given word is valid.
@@ -39,6 +46,27 @@ def is_valid(word):
 
 def main():
     """Module entry point."""
+    import argparse
+    parser = argparse.ArgumentParser(
+        description="""filters out words starting with an uppercase letters or
+                       containing an apostrophe from a list of words""")
+    # Cannot import the version from the package when running this module as a
+    # script
+    try:
+        from . import __version__
+        parser.add_argument('--version', action='version',
+                            version='%(prog)s ' + __version__)
+    except SystemError:
+        pass
+    parser.add_argument('source', type=argparse.FileType('rb'),
+                        help='a file containing a list of words')
+    parser.add_argument('destination', type=argparse.FileType('w'),
+                        help='destination of the filtered list of words')
+    args = parser.parse_args()
+    # Decode the list of words as UTF-8 and remove the trailing \n
+    words = (word.strip() for word in codecs.iterdecode(args.source, 'utf-8'))
+    for word in filter(is_valid, words):
+        print(word, file=args.destination)
 
 
 if __name__ == '__main__':
