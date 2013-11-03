@@ -82,6 +82,11 @@ setup(
     packages=[
         'tuxywords',
     ],
+    entry_points={
+        'console_scripts': [
+            'twcleanup = tuxywords.cleanup:main',
+        ],
+    },
     test_suite='nose.collector',
     tests_require=[
         'nose',
