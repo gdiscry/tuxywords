@@ -64,3 +64,26 @@ def test_relations():
 def check_relations(wordlist, relations):
     builder = transform.RelationsBuilder(wordlist)
     assert builder.relations() == relations
+
+
+def test_transformations():
+    relations = {
+        1: set([1, 2]),
+        2: set([1, 2, 3, 4]),
+        3: set([2, 3, 4, 5]),
+        4: set([2, 3, 4]),
+        5: set([3, 5]),
+    }
+    yield check_transformations, relations, 1, 1, [1]
+    yield check_transformations, relations, 1, 2, [1, 2]
+    yield check_transformations, relations, 2, 1, [2, 1]
+    yield check_transformations, relations, 1, 3, [1, 2, 3]
+    yield check_transformations, relations, 3, 1, [3, 2, 1]
+    yield check_transformations, relations, 1, 4, [1, 2, 4]
+    yield check_transformations, relations, 4, 1, [4, 2, 1]
+    yield check_transformations, relations, 1, 5, [1, 2, 3, 5]
+    yield check_transformations, relations, 5, 1, [5, 3, 2, 1]
+
+def check_transformations(relations, start, end, transformations):
+    finder = transform.TransformationFinder(relations)
+    assert list(finder.find_transformation(start, end)) == transformations

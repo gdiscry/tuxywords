@@ -23,7 +23,7 @@
 #
 """Transforms words into other words by changing one letter at a time."""
 
-from collections import defaultdict
+from collections import defaultdict, deque
 
 
 class RelationsBuilder(object):
@@ -74,3 +74,49 @@ class RelationsBuilder(object):
             for word in relation:
                 graph[word] |= relation
         return graph
+
+
+class NoTransformationError(Exception):
+    """Exception raised when no transformation is possible between two words.
+    """
+    pass
+
+
+class TransformationFinder(object):
+    """Finds the shortest list of transformations between elements based on the
+    relations existing between them.
+    """
+
+    def __init__(self, relations):
+        self.relations = relations
+
+    def find_transformation(self, start, end):
+        """Finds the shortest list of transformations between the start and end
+        elements.
+        """
+        next_transformation = {end: None}
+        boundary = deque([end])
+        # Iterates over the boundary of elements with a known transformation
+        # that are connected to elements with an unknown transformation
+        def iter_boundary():
+            try:
+                while True:
+                    yield boundary.popleft()
+            except IndexError:
+                pass
+        for pos, word in enumerate(iter_boundary()):
+            for relation in self.relations[word]:
+                # Ignore words with a known transformation
+                if relation not in next_transformation:
+                    next_transformation[relation] = word
+                    if relation == start:
+                        break
+                    else:
+                        boundary.append(relation)
+        if start not in next_transformation:
+            # The start and end elements are not related
+            raise NoTransformationError()
+        word = start
+        while word is not None:
+            yield word
+            word = next_transformation[word]
