@@ -21,3 +21,4 @@ Usage
 See the help given by the scripts for more information::
 
    twcleanup --help
+   twtransform --help

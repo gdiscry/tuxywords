@@ -91,6 +91,7 @@ setup(
     entry_points={
         'console_scripts': [
             'twcleanup = tuxywords.cleanup:main',
+            'twtransform = tuxywords.transform:main',
         ],
     },
     install_requires=install_requires,

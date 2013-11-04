@@ -23,4 +23,4 @@
 #
 """A collection of scripts manipulating a list of words."""
 
-__version__ = "0.2.dev0"
+__version__ = "0.2"
