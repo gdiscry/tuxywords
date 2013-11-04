@@ -24,8 +24,10 @@
 """Clean the content of a file consisting of a list of words."""
 
 from __future__ import print_function
+
 import codecs
 import sys
+
 if sys.version_info[0] == 2:
     # Use the generator version of filter in Python 2
     from itertools import ifilter as filter
